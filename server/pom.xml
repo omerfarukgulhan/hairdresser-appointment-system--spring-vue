@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ofg</groupId>
-    <artifactId>barber</artifactId>
+    <artifactId>hairdresser</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>barber</name>
-    <description>Barber appointment system</description>
+    <name>hairdresser</name>
+    <description>Hairdresser appointment system</description>
     <url/>
     <licenses>
         <license/>
