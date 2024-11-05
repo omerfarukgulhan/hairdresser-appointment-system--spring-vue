@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 public interface HairdresserService {
     Page<HairdresserResponse> getAllHairdressers(Pageable pageable);
 
-    HairdresserResponse getHairdresserByUserId(long userId);
+    HairdresserResponse getHairdresserResponseByUserId(long userId);
+
+    Hairdresser getHairdresserEntityByUserId(long userId);
 
     HairdresserResponse getHairdresserResponseById(long hairdresserId);
 
