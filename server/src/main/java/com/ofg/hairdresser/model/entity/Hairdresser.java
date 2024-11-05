@@ -23,6 +23,8 @@ public class Hairdresser {
 
     private int yearsOfExperience;
 
+    private boolean active = false;
+
     @ElementCollection
     private List<String> specialties;
 
