@@ -38,10 +38,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponse addReview(long userId, ReviewCreateRequest reviewCreateRequest) {
         User user = userService.getUserEntityById(userId);
-        Hairdresser hairdresser = hairdresserService.getHairdresserEntityById(user.getId());
-        Review review = reviewCreateRequest.toReview();
+        Hairdresser hairdresser = hairdresserService.getHairdresserEntityById(reviewCreateRequest.hairdresserId());
+        Review review = reviewCreateRequest.toReview(hairdresser);
         review.setUser(user);
-        review.setHairdresser(hairdresser);
         Review savedReview = reviewRepository.save(review);
         return new ReviewResponse(savedReview);
     }
@@ -55,6 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewResponse(updatedReview);
     }
 
+    @Override
     public void deleteReview(long reviewId) {
         reviewRepository.deleteById(reviewId);
     }
