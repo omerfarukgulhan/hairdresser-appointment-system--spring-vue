@@ -27,5 +27,5 @@ public class Appointment {
 
     private LocalDateTime appointmentDate;
 
-    private String status;
+    private String status = "pending";
 }
