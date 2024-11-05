@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiDataResponse<UserResponse>> getUserById(@PathVariable Long userId) {
-        UserResponse userResponse = userService.getUserById(userId);
+        UserResponse userResponse = userService.getUserResponseById(userId);
         return ResponseUtil.createApiDataResponse(userResponse, USER_FETCH_SUCCESS, HttpStatus.OK);
     }
 

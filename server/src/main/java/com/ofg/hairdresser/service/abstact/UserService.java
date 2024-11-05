@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
     Page<UsersListResponse> getAllUsers(Pageable pageable);
 
-    UserResponse getUserById(long userId);
+    UserResponse getUserResponseById(long userId);
+
+    User getUserEntityById(long userId);
 
     User getUserByEmail(String email);
 

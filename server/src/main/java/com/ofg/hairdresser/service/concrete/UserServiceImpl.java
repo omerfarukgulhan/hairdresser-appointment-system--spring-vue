@@ -51,9 +51,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserById(long userId) {
+    public UserResponse getUserResponseById(long userId) {
         return userRepository.findActiveByIdWithRoles(userId)
                 .map(UserResponse::new)
+                .orElseThrow(() -> new NotFoundException(userId));
+    }
+
+    @Override
+    public User getUserEntityById(long userId) {
+        return userRepository.findActiveByIdWithRoles(userId)
                 .orElseThrow(() -> new NotFoundException(userId));
     }
 
