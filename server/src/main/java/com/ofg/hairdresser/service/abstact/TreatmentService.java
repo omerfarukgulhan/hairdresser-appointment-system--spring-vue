@@ -14,7 +14,7 @@ public interface TreatmentService {
 
     Treatment getTreatmentEntityById(long treatmentId);
 
-    TreatmentResponse addTreatment(long hairdresserId, TreatmentCreateRequest treatmentCreateRequest);
+    TreatmentResponse addTreatment(long userId, TreatmentCreateRequest treatmentCreateRequest);
 
     TreatmentResponse updateTreatment(long treatmentId, TreatmentUpdateRequest treatmentUpdateRequest);
 

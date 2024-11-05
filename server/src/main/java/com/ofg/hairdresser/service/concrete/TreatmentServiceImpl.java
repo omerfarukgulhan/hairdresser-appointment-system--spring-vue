@@ -44,9 +44,9 @@ public class TreatmentServiceImpl implements TreatmentService {
     }
 
     @Override
-    public TreatmentResponse addTreatment(long hairdresserId, TreatmentCreateRequest treatmentCreateRequest) {
+    public TreatmentResponse addTreatment(long userId, TreatmentCreateRequest treatmentCreateRequest) {
         Treatment treatment = treatmentCreateRequest.toTreatment();
-        Hairdresser hairdresser = hairdresserService.getHairdresserEntityById(hairdresserId);
+        Hairdresser hairdresser = hairdresserService.getHairdresserEntityByUserId(userId);
         treatment.setHairdresser(hairdresser);
         Treatment savedTreatment = treatmentRepository.save(treatment);
         return new TreatmentResponse(savedTreatment);
