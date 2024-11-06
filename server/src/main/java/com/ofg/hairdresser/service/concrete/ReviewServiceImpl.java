@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
@@ -44,6 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
         Hairdresser hairdresser = hairdresserService.getHairdresserEntityById(reviewCreateRequest.hairdresserId());
         Review review = reviewCreateRequest.toReview(hairdresser);
         review.setUser(user);
+        review.setCreatedAt(LocalDateTime.now());
         Review savedReview = reviewRepository.save(review);
         return new ReviewResponse(savedReview);
     }
@@ -73,6 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
     private void updateReviewDetails(Review review, ReviewUpdateRequest reviewUpdateRequest) {
         review.setRating(reviewUpdateRequest.rating());
         review.setComment(reviewUpdateRequest.comment());
+        review.setCreatedAt(LocalDateTime.now());
     }
 }
 

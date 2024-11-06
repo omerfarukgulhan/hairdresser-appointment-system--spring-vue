@@ -21,7 +21,7 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PutMapping("/{hairdresserId}")
+    @PutMapping("/approve/hairdressers/{hairdresserId}")
     public ResponseEntity<ApiDataResponse<HairdresserResponse>> activateHairdresser(@PathVariable long hairdresserId) {
         HairdresserResponse hairdresser = adminService.activateHairdresser(hairdresserId);
         return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_ACTIVATED, HttpStatus.OK);
