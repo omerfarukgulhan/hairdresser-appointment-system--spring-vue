@@ -20,7 +20,9 @@ public class HairdresserApplication {
     }
 
     @Bean
-    public CommandLineRunner createUsers(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public CommandLineRunner createUsers(UserRepository userRepository,
+                                         PasswordEncoder passwordEncoder,
+                                         RoleRepository roleRepository) {
         return args -> {
             Role userRole = roleRepository.findByName("ROLE_USER")
                     .orElseGet(() -> {
@@ -36,7 +38,7 @@ public class HairdresserApplication {
                         return roleRepository.save(role);
                     });
 
-            Role hairdresserRole = roleRepository.findByName("ROLE_HAIRDRESSER")
+            roleRepository.findByName("ROLE_HAIRDRESSER")
                     .orElseGet(() -> {
                         Role role = new Role();
                         role.setName("ROLE_HAIRDRESSER");
@@ -68,22 +70,6 @@ public class HairdresserApplication {
                 user.setPassword(passwordEncoder.encode("P4ssword"));
                 user.setFirstName("faruk");
                 user.setLastName("gulhan");
-                user.setProfileImage("default.png");
-                user.setActive(true);
-                user.setRoles(roles);
-                userRepository.save(user);
-            }
-
-            if (userRepository.findByEmail("hairdresser@gmail.com").isEmpty()) {
-                Set<Role> roles = new HashSet<>();
-                roles.add(hairdresserRole);
-                roles.add(userRole);
-
-                User user = new User();
-                user.setEmail("hairdresser@gmail.com");
-                user.setPassword(passwordEncoder.encode("P4ssword"));
-                user.setFirstName("hairdresser");
-                user.setLastName("test");
                 user.setProfileImage("default.png");
                 user.setActive(true);
                 user.setRoles(roles);
