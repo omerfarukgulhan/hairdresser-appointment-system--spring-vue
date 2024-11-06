@@ -21,7 +21,10 @@ public class Hairdresser {
     private String bio;
 
     @Column(nullable = false)
-    private double rating;
+    private int numberOfReviews = 0;
+
+    @Column(nullable = false)
+    private double averageRating = 0.0;
 
     @Column(nullable = false)
     private int yearsOfExperience;

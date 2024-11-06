@@ -90,7 +90,6 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     private void updateHairdresserDetails(Hairdresser hairdresser, HairdresserUpdateRequest hairdresserUpdateRequest) {
         hairdresser.setBio(hairdresserUpdateRequest.bio());
-        hairdresser.setRating(hairdresserUpdateRequest.rating());
         hairdresser.setYearsOfExperience(hairdresserUpdateRequest.yearsOfExperience());
         hairdresser.setSpecialties(hairdresserUpdateRequest.specialties());
     }

@@ -9,9 +9,6 @@ public record HairdresserCreateRequest(
         @NotBlank(message = "Bio cannot be blank")
         @Size(max = 500, message = "Bio must be under 500 characters")
         String bio,
-        @Min(value = 0, message = "Rating cannot be negative")
-        @Max(value = 5, message = "Rating cannot exceed 5")
-        double rating,
         @Min(value = 0, message = "Years of experience cannot be negative")
         int yearsOfExperience,
         @NotNull(message = "Specialties cannot be null")
@@ -21,7 +18,6 @@ public record HairdresserCreateRequest(
     public Hairdresser toHairdresser() {
         Hairdresser hairdresser = new Hairdresser();
         hairdresser.setBio(bio);
-        hairdresser.setRating(rating);
         hairdresser.setYearsOfExperience(yearsOfExperience);
         hairdresser.setSpecialties(specialties);
         return hairdresser;

@@ -5,6 +5,7 @@ import com.ofg.hairdresser.exception.general.NotFoundException;
 import com.ofg.hairdresser.model.entity.Hairdresser;
 import com.ofg.hairdresser.model.entity.Review;
 import com.ofg.hairdresser.model.entity.User;
+import com.ofg.hairdresser.model.request.HairdresserUpdateRequest;
 import com.ofg.hairdresser.model.request.ReviewCreateRequest;
 import com.ofg.hairdresser.model.request.ReviewUpdateRequest;
 import com.ofg.hairdresser.model.response.ReviewResponse;
@@ -48,6 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUser(user);
         review.setCreatedAt(LocalDateTime.now());
         Review savedReview = reviewRepository.save(review);
+        updateHairdresserRatingAndReviewCount(hairdresser);
         return new ReviewResponse(savedReview);
     }
 
@@ -60,6 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
         updateReviewDetails(existingReview, reviewUpdateRequest);
         Review updatedReview = reviewRepository.save(existingReview);
+        updateHairdresserRatingAndReviewCount(existingReview.getHairdresser());
         return new ReviewResponse(updatedReview);
     }
 
@@ -70,7 +73,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (existingReview.getUser().getId() != userId) {
             throw new UnauthorizedException();
         }
+        Hairdresser hairdresser = existingReview.getHairdresser();
         reviewRepository.deleteById(reviewId);
+        updateHairdresserRatingAndReviewCount(hairdresser);
     }
 
     private void updateReviewDetails(Review review, ReviewUpdateRequest reviewUpdateRequest) {
@@ -78,5 +83,16 @@ public class ReviewServiceImpl implements ReviewService {
         review.setComment(reviewUpdateRequest.comment());
         review.setCreatedAt(LocalDateTime.now());
     }
-}
 
+    private void updateHairdresserRatingAndReviewCount(Hairdresser hairdresser) {
+        long numberOfReviews = reviewRepository.countByHairdresser(hairdresser);
+        double averageRating = reviewRepository.findByHairdresser(hairdresser).stream()
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+        hairdresser.setNumberOfReviews((int) numberOfReviews);
+        hairdresser.setAverageRating(averageRating);
+        hairdresserService.updateHairdresser(hairdresser.getUser().getId(), hairdresser.getId(),
+                new HairdresserUpdateRequest(hairdresser.getBio(), hairdresser.getYearsOfExperience(), hairdresser.getSpecialties()));
+    }
+}

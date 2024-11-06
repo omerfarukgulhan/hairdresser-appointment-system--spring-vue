@@ -9,17 +9,18 @@ public record HairdresserResponse(
         Long id,
         Long userId,
         String bio,
-        double rating,
+        int numberOfReviews,
+        double averageRating,
         int yearsOfExperience,
         List<String> specialties,
-        List<TreatmentResponse> treatments // List of TreatmentResponse
+        List<TreatmentResponse> treatments
 ) {
     public HairdresserResponse(Hairdresser hairdresser) {
         this(hairdresser.getId(), hairdresser.getUser().getId(),
-                hairdresser.getBio(), hairdresser.getRating(),
+                hairdresser.getBio(), hairdresser.getNumberOfReviews(), hairdresser.getAverageRating(),
                 hairdresser.getYearsOfExperience(), hairdresser.getSpecialties(),
-                hairdresser.getTreatments().stream() // Convert each Treatment to TreatmentResponse
-                        .map(TreatmentResponse::new) // Map Treatment entity to TreatmentResponse
+                hairdresser.getTreatments().stream()
+                        .map(TreatmentResponse::new)
                         .collect(Collectors.toList()));
     }
 }
