@@ -23,12 +23,12 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(min = 4, max = 255)
+    @Size(min = 3, max = 255)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotBlank
-    @Size(min = 4, max = 255)
+    @Size(min = 3, max = 255)
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
