@@ -25,7 +25,9 @@ public class Appointment {
     @JoinColumn(name = "treatment_id", nullable = false)
     private Treatment treatment;
 
+    @Column(nullable = false)
     private LocalDateTime appointmentDate;
 
+    @Column(nullable = false)
     private String status = "pending";
 }

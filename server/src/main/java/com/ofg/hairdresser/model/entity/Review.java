@@ -21,9 +21,11 @@ public class Review {
     @JoinColumn(name = "hairdresser_id", nullable = false)
     private Hairdresser hairdresser;
 
+    @Column(nullable = false)
     private int rating;
 
     private String comment;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 }
