@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TreatmentService {
-    Page<TreatmentResponse> getAllTreatments(Pageable pageable);
+    Page<TreatmentResponse> getAllTreatmentsForHairdresser(long hairdresserId, Pageable pageable);
 
     TreatmentResponse getTreatmentResponseById(long treatmentId);
 
@@ -16,7 +16,7 @@ public interface TreatmentService {
 
     TreatmentResponse addTreatment(long userId, TreatmentCreateRequest treatmentCreateRequest);
 
-    TreatmentResponse updateTreatment(long treatmentId, TreatmentUpdateRequest treatmentUpdateRequest);
+    TreatmentResponse updateTreatment(long userId, long treatmentId, TreatmentUpdateRequest treatmentUpdateRequest);
 
-    void deleteTreatment(long treatmentId);
+    void deleteTreatment(long userId, long treatmentId);
 }

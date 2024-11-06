@@ -1,5 +1,6 @@
 package com.ofg.hairdresser.service.concrete;
 
+import com.ofg.hairdresser.exception.authentication.UnauthorizedException;
 import com.ofg.hairdresser.exception.general.NotFoundException;
 import com.ofg.hairdresser.model.entity.Hairdresser;
 import com.ofg.hairdresser.model.entity.Treatment;
@@ -20,14 +21,16 @@ public class TreatmentServiceImpl implements TreatmentService {
     private final HairdresserService hairdresserService;
 
     @Autowired
-    public TreatmentServiceImpl(HairdresserService hairdresserService, TreatmentRepository treatmentRepository) {
+    public TreatmentServiceImpl(HairdresserService hairdresserService,
+                                TreatmentRepository treatmentRepository) {
         this.hairdresserService = hairdresserService;
         this.treatmentRepository = treatmentRepository;
     }
 
     @Override
-    public Page<TreatmentResponse> getAllTreatments(Pageable pageable) {
-        return treatmentRepository.findAll(pageable).map(TreatmentResponse::new);
+    public Page<TreatmentResponse> getAllTreatmentsForHairdresser(long hairdresserId, Pageable pageable) {
+        return treatmentRepository.findByHairdresserId(hairdresserId, pageable)
+                .map(TreatmentResponse::new);
     }
 
     @Override
@@ -53,16 +56,26 @@ public class TreatmentServiceImpl implements TreatmentService {
     }
 
     @Override
-    public TreatmentResponse updateTreatment(long treatmentId, TreatmentUpdateRequest treatmentUpdateRequest) {
+    public TreatmentResponse updateTreatment(long userId, long treatmentId, TreatmentUpdateRequest treatmentUpdateRequest) {
         Treatment existingTreatment = treatmentRepository.findById(treatmentId)
                 .orElseThrow(() -> new NotFoundException(treatmentId));
+        long hairdresserId = hairdresserService.getHairdresserEntityByUserId(userId).getId();
+        if (existingTreatment.getHairdresser().getId() != hairdresserId) {
+            throw new UnauthorizedException();
+        }
         updateTreatmentDetails(existingTreatment, treatmentUpdateRequest);
         Treatment updatedTreatment = treatmentRepository.save(existingTreatment);
         return new TreatmentResponse(updatedTreatment);
     }
 
     @Override
-    public void deleteTreatment(long treatmentId) {
+    public void deleteTreatment(long userId, long treatmentId) {
+        Treatment existingTreatment = treatmentRepository.findById(treatmentId)
+                .orElseThrow(() -> new NotFoundException(treatmentId));
+        long hairdresserId = hairdresserService.getHairdresserEntityByUserId(userId).getId();
+        if (existingTreatment.getHairdresser().getId() != hairdresserId) {
+            throw new UnauthorizedException();
+        }
         treatmentRepository.deleteById(treatmentId);
     }
 

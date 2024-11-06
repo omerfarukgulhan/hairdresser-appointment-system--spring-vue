@@ -1,5 +1,6 @@
 package com.ofg.hairdresser.service.concrete;
 
+import com.ofg.hairdresser.exception.authentication.UnauthorizedException;
 import com.ofg.hairdresser.exception.general.NotFoundException;
 import com.ofg.hairdresser.model.entity.Hairdresser;
 import com.ofg.hairdresser.model.entity.Review;
@@ -23,7 +24,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final HairdresserService hairdresserService;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserService userService, HairdresserService hairdresserService) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository,
+                             UserService userService,
+                             HairdresserService hairdresserService) {
         this.reviewRepository = reviewRepository;
         this.userService = userService;
         this.hairdresserService = hairdresserService;
@@ -46,16 +49,24 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewResponse updateReview(long reviewId, ReviewUpdateRequest reviewUpdateRequest) {
+    public ReviewResponse updateReview(long userId, long reviewId, ReviewUpdateRequest reviewUpdateRequest) {
         Review existingReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NotFoundException(reviewId));
+        if (existingReview.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
         updateReviewDetails(existingReview, reviewUpdateRequest);
         Review updatedReview = reviewRepository.save(existingReview);
         return new ReviewResponse(updatedReview);
     }
 
     @Override
-    public void deleteReview(long reviewId) {
+    public void deleteReview(long userId, long reviewId) {
+        Review existingReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NotFoundException(reviewId));
+        if (existingReview.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
         reviewRepository.deleteById(reviewId);
     }
 
