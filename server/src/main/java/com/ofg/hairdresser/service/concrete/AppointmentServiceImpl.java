@@ -1,5 +1,6 @@
 package com.ofg.hairdresser.service.concrete;
 
+import com.ofg.hairdresser.exception.authentication.UnauthorizedException;
 import com.ofg.hairdresser.exception.general.NotFoundException;
 import com.ofg.hairdresser.model.entity.Appointment;
 import com.ofg.hairdresser.model.entity.Hairdresser;
@@ -26,7 +27,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserService userService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, HairdresserService hairdresserService, TreatmentService treatmentService, UserService userService) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
+                                  HairdresserService hairdresserService,
+                                  TreatmentService treatmentService,
+                                  UserService userService) {
         this.appointmentRepository = appointmentRepository;
         this.hairdresserService = hairdresserService;
         this.treatmentService = treatmentService;
@@ -51,16 +55,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponse updateAppointment(long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
-        Appointment appointment = appointmentRepository.findById(appointmentId)
+    public AppointmentResponse updateAppointment(long userId, long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
+        Appointment existingAppointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NotFoundException(appointmentId));
-        updateAppointmentDetails(appointment, appointmentUpdateRequest);
-        Appointment savedAppointment = appointmentRepository.save(appointment);
+        if (existingAppointment.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
+        updateAppointmentDetails(existingAppointment, appointmentUpdateRequest);
+        Appointment savedAppointment = appointmentRepository.save(existingAppointment);
         return new AppointmentResponse(savedAppointment);
     }
 
     @Override
-    public void cancelAppointment(long appointmentId) {
+    public void cancelAppointment(long userId, long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundException(appointmentId));
+        if (appointment.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
         appointmentRepository.deleteById(appointmentId);
     }
 

@@ -11,7 +11,7 @@ public interface AppointmentService {
 
     AppointmentResponse bookAppointment(long userId, AppointmentCreateRequest appointmentCreateRequest);
 
-    AppointmentResponse updateAppointment(long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest);
+    AppointmentResponse updateAppointment(long userId, long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest);
 
-    void cancelAppointment(long appointmentId);
+    void cancelAppointment(long userId, long appointmentId);
 }
