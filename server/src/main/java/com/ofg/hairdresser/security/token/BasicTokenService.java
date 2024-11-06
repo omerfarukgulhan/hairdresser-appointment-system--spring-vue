@@ -49,7 +49,7 @@ public class BasicTokenService implements TokenService {
 
     private String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Basic ")) {
-            return authorizationHeader.substring(6); // Remove "Basic " prefix
+            return authorizationHeader.substring(6);
         }
         return null;
     }

@@ -44,8 +44,6 @@ public class EmailServiceImpl implements EmailService {
     public void sendActivationEmail(String email, String activationToken) {
         String activationUrl = buildActivationUrl(activationToken);
         String mailBody = buildEmailBody("app.msg.mail.user.created.title", activationUrl);
-        System.out.println(activationUrl);
-        System.out.println(activationToken);
         sendEmail(email, mailBody, "Activation Email");
     }
 
