@@ -1,5 +1,6 @@
 package com.ofg.hairdresser.service.concrete;
 
+import com.ofg.hairdresser.exception.authentication.UnauthorizedException;
 import com.ofg.hairdresser.exception.general.NotFoundException;
 import com.ofg.hairdresser.model.entity.Hairdresser;
 import com.ofg.hairdresser.model.entity.User;
@@ -20,7 +21,8 @@ public class HairdresserServiceImpl implements HairdresserService {
     private final UserService userService;
 
     @Autowired
-    public HairdresserServiceImpl(HairdresserRepository hairdresserRepository, UserService userService) {
+    public HairdresserServiceImpl(HairdresserRepository hairdresserRepository,
+                                  UserService userService) {
         this.hairdresserRepository = hairdresserRepository;
         this.userService = userService;
     }
@@ -28,13 +30,6 @@ public class HairdresserServiceImpl implements HairdresserService {
     @Override
     public Page<HairdresserResponse> getAllHairdressers(Pageable pageable) {
         return hairdresserRepository.findAllActiveHairdresser(pageable).map(HairdresserResponse::new);
-    }
-
-    @Override
-    public HairdresserResponse getHairdresserResponseByUserId(long userId) {
-        return hairdresserRepository.findByUserId(userId)
-                .map(HairdresserResponse::new)
-                .orElseThrow(() -> new NotFoundException(userId));
     }
 
     @Override
@@ -57,6 +52,12 @@ public class HairdresserServiceImpl implements HairdresserService {
     }
 
     @Override
+    public Hairdresser getInactiveHairdresserEntityById(long hairdresserId) {
+        return hairdresserRepository.findInactiveById(hairdresserId)
+                .orElseThrow(() -> new NotFoundException(hairdresserId));
+    }
+
+    @Override
     public HairdresserResponse addHairdresser(long userId, HairdresserCreateRequest hairdresserCreateRequest) {
         Hairdresser hairdresser = hairdresserCreateRequest.toHairdresser();
         User user = userService.getUserEntityById(userId);
@@ -66,16 +67,24 @@ public class HairdresserServiceImpl implements HairdresserService {
     }
 
     @Override
-    public HairdresserResponse updateHairdresser(long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest) {
+    public HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest) {
         Hairdresser existingHairdresser = hairdresserRepository.findById(hairdresserId)
                 .orElseThrow(() -> new NotFoundException(hairdresserId));
+        if (existingHairdresser.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
         updateHairdresserDetails(existingHairdresser, hairdresserUpdateRequest);
         Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
         return new HairdresserResponse(updatedHairdresser);
     }
 
     @Override
-    public void deleteHairdresser(long hairdresserId) {
+    public void deleteHairdresser(long userId, long hairdresserId) {
+        Hairdresser existingHairdresser = hairdresserRepository.findById(hairdresserId)
+                .orElseThrow(() -> new NotFoundException(hairdresserId));
+        if (existingHairdresser.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
         hairdresserRepository.deleteById(hairdresserId);
     }
 

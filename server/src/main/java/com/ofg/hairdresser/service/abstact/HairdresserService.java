@@ -7,11 +7,8 @@ import com.ofg.hairdresser.model.response.HairdresserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 public interface HairdresserService {
     Page<HairdresserResponse> getAllHairdressers(Pageable pageable);
-
-    HairdresserResponse getHairdresserResponseByUserId(long userId);
 
     Hairdresser getHairdresserEntityByUserId(long userId);
 
@@ -19,9 +16,11 @@ public interface HairdresserService {
 
     Hairdresser getHairdresserEntityById(long hairdresserId);
 
+    Hairdresser getInactiveHairdresserEntityById(long hairdresserId);
+
     HairdresserResponse addHairdresser(long userId, HairdresserCreateRequest hairdresserCreateRequest);
 
-    HairdresserResponse updateHairdresser(long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest);
+    HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest);
 
-    void deleteHairdresser(long hairdresserId);
+    void deleteHairdresser(long userId, long hairdresserId);
 }
