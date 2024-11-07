@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import com.ofg.hairdresser.core.util.message.Messages;
 import com.ofg.hairdresser.core.util.results.ApiErrorResponse;
+import com.ofg.hairdresser.exception.AppointmentUnavailableException;
 import com.ofg.hairdresser.exception.authentication.*;
 import com.ofg.hairdresser.exception.email.ActivationNotificationException;
 import com.ofg.hairdresser.exception.email.EmailServiceException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ErrorController {
+
     @ExceptionHandler({
             ActivationNotificationException.class,
             AuthenticationException.class,
@@ -31,7 +33,9 @@ public class ErrorController {
             MissingAuthorizationHeaderException.class,
             NotFoundException.class,
             NotUniqueEmailException.class,
-            UserInactiveException.class
+            UserInactiveException.class,
+            UnauthorizedException.class,
+            AppointmentUnavailableException.class
     })
     public ResponseEntity<ApiErrorResponse> handleException(Exception exception, HttpServletRequest request) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
@@ -41,8 +45,10 @@ public class ErrorController {
         int status = 500;
         if (exception instanceof ActivationNotificationException) {
             status = 502;
-        } else if (exception instanceof AuthenticationException) {
+        } else if (exception instanceof AuthenticationException || exception instanceof UnauthorizedException) {
             status = 401;
+        } else if (exception instanceof AppointmentUnavailableException) {
+            status = 409;
         } else if (exception instanceof EmailServiceException) {
             status = 500;
         } else if (exception instanceof FileServiceException) {
