@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -29,6 +30,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final HairdresserService hairdresserService;
     private final TreatmentService treatmentService;
     private final UserService userService;
+
+    private static final LocalTime WORK_START_TIME = LocalTime.of(9, 0);
+    private static final LocalTime WORK_END_TIME = LocalTime.of(17, 0);
 
     @Autowired
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
@@ -101,6 +105,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentTime(Hairdresser hairdresser, LocalDateTime startTime, LocalDateTime endTime) {
+        LocalTime appointmentStartTime = startTime.toLocalTime();
+        LocalTime appointmentEndTime = endTime.toLocalTime();
+
+        if (appointmentStartTime.isBefore(WORK_START_TIME) || appointmentEndTime.isAfter(WORK_END_TIME)) {
+            throw new AppointmentUnavailableException("Appointment must be between 9 AM and 5 PM.");
+        }
+
         if (isOverlappingWithPastAppointment(hairdresser, startTime)) {
             throw new AppointmentUnavailableException();
         }

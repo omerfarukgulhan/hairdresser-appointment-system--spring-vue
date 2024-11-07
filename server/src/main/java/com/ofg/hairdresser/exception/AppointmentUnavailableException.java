@@ -7,4 +7,8 @@ public class AppointmentUnavailableException extends RuntimeException {
     public AppointmentUnavailableException() {
         super(Messages.getMessageForLocale("app.msg.appointment.unavailable", LocaleContextHolder.getLocale()));
     }
+
+    public AppointmentUnavailableException(String message) {
+        super(message);
+    }
 }
