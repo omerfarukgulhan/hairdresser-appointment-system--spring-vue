@@ -29,5 +29,5 @@ public class Appointment {
     private LocalDateTime appointmentDate;
 
     @Column(nullable = false)
-    private String status = "pending";
+    private boolean completed=false;
 }

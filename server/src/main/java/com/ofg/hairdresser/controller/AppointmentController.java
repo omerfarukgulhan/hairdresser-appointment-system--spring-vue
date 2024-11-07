@@ -53,6 +53,13 @@ public class AppointmentController {
         return ResponseUtil.createApiDataResponse(appointment, APPOINTMENT_UPDATE_SUCCESS, HttpStatus.OK);
     }
 
+    @PutMapping("/complete/{appointmentId}")
+    public ResponseEntity<ApiDataResponse<AppointmentResponse>> completeAppointment(@AuthenticationPrincipal CurrentUser currentUser,
+                                                                                  @PathVariable long appointmentId) {
+        AppointmentResponse appointment = appointmentService.completeAppointment(currentUser.getId(), appointmentId);
+        return ResponseUtil.createApiDataResponse(appointment, APPOINTMENT_UPDATE_SUCCESS, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{appointmentId}")
     public ResponseEntity<ApiResponse> deleteAppointment(@AuthenticationPrincipal CurrentUser currentUser,
                                                          @PathVariable long appointmentId) {

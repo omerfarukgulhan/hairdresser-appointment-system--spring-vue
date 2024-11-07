@@ -11,7 +11,7 @@ public record AppointmentUpdateRequest(
         @Future(message = "Appointment date must be in the future")
         LocalDateTime appointmentDate,
         @NotBlank(message = "Status cannot be blank")
-        String status
+        boolean completed
 ) {
 
 }

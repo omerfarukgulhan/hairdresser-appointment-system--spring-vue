@@ -10,11 +10,11 @@ public record AppointmentResponse(
         Long hairdresserId,
         Long treatmentId,
         LocalDateTime appointmentDate,
-        String status
+        boolean completed
 ) {
     public AppointmentResponse(Appointment appointment) {
         this(appointment.getId(), appointment.getUser().getId(),
                 appointment.getHairdresser().getId(), appointment.getTreatment().getId(),
-                appointment.getAppointmentDate(), appointment.getStatus());
+                appointment.getAppointmentDate(), appointment.isCompleted());
     }
 }

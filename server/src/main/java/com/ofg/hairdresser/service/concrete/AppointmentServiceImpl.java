@@ -56,28 +56,37 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse updateAppointment(long userId, long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
-        Appointment existingAppointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new NotFoundException(appointmentId));
-        if (existingAppointment.getUser().getId() != userId) {
-            throw new UnauthorizedException();
-        }
+        Appointment existingAppointment = getAuthorizedAppointment(userId, appointmentId);
         updateAppointmentDetails(existingAppointment, appointmentUpdateRequest);
         Appointment savedAppointment = appointmentRepository.save(existingAppointment);
         return new AppointmentResponse(savedAppointment);
     }
 
     @Override
+    public AppointmentResponse completeAppointment(long userId, long appointmentId) {
+        Appointment existingAppointment = getAuthorizedAppointment(userId, appointmentId);
+        existingAppointment.setCompleted(true);
+        Appointment savedAppointment = appointmentRepository.save(existingAppointment);
+        return new AppointmentResponse(savedAppointment);
+    }
+
+    @Override
     public void cancelAppointment(long userId, long appointmentId) {
+        getAuthorizedAppointment(userId, appointmentId);
+        appointmentRepository.deleteById(appointmentId);
+    }
+
+    private Appointment getAuthorizedAppointment(long userId, long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NotFoundException(appointmentId));
         if (appointment.getUser().getId() != userId) {
             throw new UnauthorizedException();
         }
-        appointmentRepository.deleteById(appointmentId);
+        return appointment;
     }
 
     private void updateAppointmentDetails(Appointment appointment, AppointmentUpdateRequest appointmentUpdateRequest) {
         appointment.setAppointmentDate(appointmentUpdateRequest.appointmentDate());
-        appointment.setStatus(appointmentUpdateRequest.status());
+        appointment.setCompleted(appointmentUpdateRequest.completed());
     }
 }
