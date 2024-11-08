@@ -33,7 +33,8 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiDataResponse<Page<AppointmentResponse>>> getAllAppointmentsForUser(Pageable pageable, @AuthenticationPrincipal CurrentUser currentUser) {
+    public ResponseEntity<ApiDataResponse<Page<AppointmentResponse>>> getAllAppointmentsForUser(Pageable pageable,
+                                                                                                @AuthenticationPrincipal CurrentUser currentUser) {
         Page<AppointmentResponse> appointments = appointmentService.getAllAppointmentsForUser(currentUser.getId(), pageable);
         return ResponseUtil.createApiDataResponse(appointments, APPOINTMENTS_FETCH_SUCCESS, HttpStatus.OK);
     }
@@ -55,7 +56,7 @@ public class AppointmentController {
 
     @PutMapping("/complete/{appointmentId}")
     public ResponseEntity<ApiDataResponse<AppointmentResponse>> completeAppointment(@AuthenticationPrincipal CurrentUser currentUser,
-                                                                                  @PathVariable long appointmentId) {
+                                                                                    @PathVariable long appointmentId) {
         AppointmentResponse appointment = appointmentService.completeAppointment(currentUser.getId(), appointmentId);
         return ResponseUtil.createApiDataResponse(appointment, APPOINTMENT_UPDATE_SUCCESS, HttpStatus.OK);
     }

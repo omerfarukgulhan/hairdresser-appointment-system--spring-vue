@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-
     Page<Appointment> findByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT COUNT(a) > 0 FROM Appointment a " +
@@ -26,4 +25,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "AND a.appointmentDate < :startTime ORDER BY a.appointmentDate DESC")
     List<Appointment> findClosestPastAppointment(@Param("hairdresser") Hairdresser hairdresser,
                                                  @Param("startTime") LocalDateTime startTime);
+
+    List<Appointment> findByHairdresserIdAndAppointmentDateBetween(long hairdresserId,
+                                                                   LocalDateTime start,
+                                                                   LocalDateTime end);
 }

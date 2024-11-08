@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -52,6 +53,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public List<AppointmentResponse> getAllAppointmentsForHairdresserByDate(long hairdresserId, LocalDateTime localDateTime) {
+        LocalDateTime startOfDay = localDateTime.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        return appointmentRepository.findByHairdresserIdAndAppointmentDateBetween(hairdresserId, startOfDay, endOfDay)
+                .stream().map(AppointmentResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AppointmentResponse bookAppointment(long userId, AppointmentCreateRequest appointmentCreateRequest) {
         User user = userService.getUserEntityById(userId);
         Treatment treatment = treatmentService.getTreatmentEntityById(appointmentCreateRequest.treatmentId());
@@ -70,7 +80,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse updateAppointment(long userId, long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
-        Appointment existingAppointment = getAuthorizedAppointment(userId, appointmentId);
+        Appointment existingAppointment = getAndValidateAppointmentOwnership(userId, appointmentId);
 
         LocalDateTime startTime = existingAppointment.getAppointmentDate();
         LocalDateTime endTime = startTime.plusMinutes(existingAppointment.getTreatment().getDuration());
@@ -83,7 +93,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse completeAppointment(long userId, long appointmentId) {
-        Appointment existingAppointment = getAuthorizedAppointment(userId, appointmentId);
+        Appointment existingAppointment = getAndValidateAppointmentOwnership(userId, appointmentId);
         existingAppointment.setCompleted(true);
         Appointment savedAppointment = appointmentRepository.save(existingAppointment);
         return new AppointmentResponse(savedAppointment);
@@ -91,11 +101,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void cancelAppointment(long userId, long appointmentId) {
-        getAuthorizedAppointment(userId, appointmentId);
+        getAndValidateAppointmentOwnership(userId, appointmentId);
         appointmentRepository.deleteById(appointmentId);
     }
 
-    private Appointment getAuthorizedAppointment(long userId, long appointmentId) {
+    private Appointment getAndValidateAppointmentOwnership(long userId, long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NotFoundException(appointmentId));
         if (appointment.getUser().getId() != userId) {
@@ -111,7 +121,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointmentStartTime.isBefore(WORK_START_TIME) || appointmentEndTime.isAfter(WORK_END_TIME)) {
             throw new AppointmentUnavailableException("Appointment must be between 9 AM and 5 PM.");
         }
-
         if (isOverlappingWithPastAppointment(hairdresser, startTime)) {
             throw new AppointmentUnavailableException();
         }
