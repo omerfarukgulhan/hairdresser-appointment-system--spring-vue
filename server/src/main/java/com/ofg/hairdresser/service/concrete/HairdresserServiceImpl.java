@@ -8,12 +8,14 @@ import com.ofg.hairdresser.model.request.HairdresserCreateRequest;
 import com.ofg.hairdresser.model.request.HairdresserUpdateRequest;
 import com.ofg.hairdresser.model.response.HairdresserResponse;
 import com.ofg.hairdresser.repository.HairdresserRepository;
+import com.ofg.hairdresser.service.abstact.FileService;
 import com.ofg.hairdresser.service.abstact.HairdresserService;
 import com.ofg.hairdresser.service.abstact.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -21,12 +23,15 @@ import java.util.Optional;
 public class HairdresserServiceImpl implements HairdresserService {
     private final HairdresserRepository hairdresserRepository;
     private final UserService userService;
+    private final FileService fileService;
 
     @Autowired
     public HairdresserServiceImpl(HairdresserRepository hairdresserRepository,
-                                  UserService userService) {
+                                  UserService userService,
+                                  FileService fileService) {
         this.hairdresserRepository = hairdresserRepository;
         this.userService = userService;
+        this.fileService = fileService;
     }
 
     @Override
@@ -72,6 +77,16 @@ public class HairdresserServiceImpl implements HairdresserService {
     public HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest) {
         Hairdresser existingHairdresser = getAndValidateHairdresserOwnership(hairdresserId, userId);
         updateHairdresserDetails(existingHairdresser, hairdresserUpdateRequest);
+        Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
+        return new HairdresserResponse(updatedHairdresser);
+    }
+
+    @Override
+    public HairdresserResponse uploadImages(long userId, long hairdresserId, MultipartFile mainPhoto) {
+        Hairdresser existingHairdresser = getAndValidateHairdresserOwnership(hairdresserId, userId);
+        String mainPhotoFileName = fileService.saveFile("hairdresser", mainPhoto);
+        fileService.deleteProfileImage("hairdresser", existingHairdresser.getMainPhoto());
+        existingHairdresser.setMainPhoto(mainPhotoFileName);
         Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
         return new HairdresserResponse(updatedHairdresser);
     }

@@ -3,6 +3,7 @@ package com.ofg.hairdresser.model.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,4 +42,11 @@ public class Hairdresser {
 
     @OneToMany(mappedBy = "hairdresser", fetch = FetchType.EAGER)
     private List<Treatment> treatments;
+
+    private String mainPhoto  = "default.png";
+
+    @ElementCollection
+    @CollectionTable(name = "hairdresser_side_photos", joinColumns = @JoinColumn(name = "hairdresser_id"))
+    @Column(name = "side_photo")
+    private List<String> sidePhotos = new ArrayList<>();
 }

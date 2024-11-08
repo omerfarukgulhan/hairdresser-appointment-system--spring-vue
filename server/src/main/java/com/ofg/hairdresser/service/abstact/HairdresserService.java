@@ -6,6 +6,7 @@ import com.ofg.hairdresser.model.request.HairdresserUpdateRequest;
 import com.ofg.hairdresser.model.response.HairdresserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface HairdresserService {
     Page<HairdresserResponse> getAllHairdressers(Pageable pageable);
@@ -21,6 +22,8 @@ public interface HairdresserService {
     HairdresserResponse addHairdresser(long userId, HairdresserCreateRequest hairdresserCreateRequest);
 
     HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest);
+
+    HairdresserResponse uploadImages(long userId, long hairdresserId, MultipartFile mainPhoto);
 
     void deleteHairdresser(long userId, long hairdresserId);
 }

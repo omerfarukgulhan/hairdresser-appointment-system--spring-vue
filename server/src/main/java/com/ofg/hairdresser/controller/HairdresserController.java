@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/hairdressers")
@@ -59,6 +60,15 @@ public class HairdresserController {
         HairdresserResponse hairdresser = hairdresserService.updateHairdresser(currentUser.getId(), hairdresserId, hairdresserUpdateRequest);
         return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_UPDATE_SUCCESS, HttpStatus.OK);
     }
+
+    @PostMapping("/{hairdresserId}/upload-images")
+    public ResponseEntity<ApiDataResponse<HairdresserResponse>> uploadImages(@AuthenticationPrincipal CurrentUser currentUser,
+                                                                             @PathVariable long hairdresserId,
+                                                                             @RequestParam("mainPhoto") MultipartFile mainPhoto) {
+        HairdresserResponse hairdresser = hairdresserService.uploadImages(currentUser.getId(), hairdresserId, mainPhoto);
+        return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_UPDATE_SUCCESS, HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/{hairdresserId}")
     public ResponseEntity<ApiResponse> deleteHairdresser(@AuthenticationPrincipal CurrentUser currentUser,
