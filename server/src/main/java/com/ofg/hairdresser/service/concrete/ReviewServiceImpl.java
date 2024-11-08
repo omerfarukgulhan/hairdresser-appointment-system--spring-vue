@@ -55,11 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponse updateReview(long userId, long reviewId, ReviewUpdateRequest reviewUpdateRequest) {
-        Review existingReview = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NotFoundException(reviewId));
-        if (existingReview.getUser().getId() != userId) {
-            throw new UnauthorizedException();
-        }
+        Review existingReview = getAndValidateReviewOwnership(reviewId, userId);
         updateReviewDetails(existingReview, reviewUpdateRequest);
         Review updatedReview = reviewRepository.save(existingReview);
         updateHairdresserRatingAndReviewCount(existingReview.getHairdresser());
@@ -68,14 +64,19 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(long userId, long reviewId) {
-        Review existingReview = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NotFoundException(reviewId));
-        if (existingReview.getUser().getId() != userId) {
-            throw new UnauthorizedException();
-        }
+        Review existingReview = getAndValidateReviewOwnership(reviewId, userId);
         Hairdresser hairdresser = existingReview.getHairdresser();
         reviewRepository.deleteById(reviewId);
         updateHairdresserRatingAndReviewCount(hairdresser);
+    }
+
+    private Review getAndValidateReviewOwnership(long reviewId, long userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NotFoundException(reviewId));
+        if (review.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
+        return review;
     }
 
     private void updateReviewDetails(Review review, ReviewUpdateRequest reviewUpdateRequest) {

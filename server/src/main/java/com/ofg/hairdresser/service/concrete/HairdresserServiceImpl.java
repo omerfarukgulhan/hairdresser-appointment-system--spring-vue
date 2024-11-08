@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class HairdresserServiceImpl implements HairdresserService {
     private final HairdresserRepository hairdresserRepository;
@@ -40,14 +42,14 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public HairdresserResponse getHairdresserResponseById(long hairdresserId) {
-        return hairdresserRepository.findActiveById(hairdresserId)
+        return findActiveHairdresserById(hairdresserId)
                 .map(HairdresserResponse::new)
                 .orElseThrow(() -> new NotFoundException(hairdresserId));
     }
 
     @Override
     public Hairdresser getHairdresserEntityById(long hairdresserId) {
-        return hairdresserRepository.findActiveById(hairdresserId)
+        return findActiveHairdresserById(hairdresserId)
                 .orElseThrow(() -> new NotFoundException(hairdresserId));
     }
 
@@ -59,8 +61,8 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public HairdresserResponse addHairdresser(long userId, HairdresserCreateRequest hairdresserCreateRequest) {
-        Hairdresser hairdresser = hairdresserCreateRequest.toHairdresser();
         User user = userService.getUserEntityById(userId);
+        Hairdresser hairdresser = hairdresserCreateRequest.toHairdresser();
         hairdresser.setUser(user);
         Hairdresser savedHairdresser = hairdresserRepository.save(hairdresser);
         return new HairdresserResponse(savedHairdresser);
@@ -68,11 +70,7 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest) {
-        Hairdresser existingHairdresser = hairdresserRepository.findById(hairdresserId)
-                .orElseThrow(() -> new NotFoundException(hairdresserId));
-        if (existingHairdresser.getUser().getId() != userId) {
-            throw new UnauthorizedException();
-        }
+        Hairdresser existingHairdresser = validateOwnershipAndGetHairdresser(hairdresserId, userId);
         updateHairdresserDetails(existingHairdresser, hairdresserUpdateRequest);
         Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
         return new HairdresserResponse(updatedHairdresser);
@@ -80,11 +78,7 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public void deleteHairdresser(long userId, long hairdresserId) {
-        Hairdresser existingHairdresser = hairdresserRepository.findById(hairdresserId)
-                .orElseThrow(() -> new NotFoundException(hairdresserId));
-        if (existingHairdresser.getUser().getId() != userId) {
-            throw new UnauthorizedException();
-        }
+        validateOwnershipAndGetHairdresser(hairdresserId, userId);
         hairdresserRepository.deleteById(hairdresserId);
     }
 
@@ -92,5 +86,18 @@ public class HairdresserServiceImpl implements HairdresserService {
         hairdresser.setBio(hairdresserUpdateRequest.bio());
         hairdresser.setYearsOfExperience(hairdresserUpdateRequest.yearsOfExperience());
         hairdresser.setSpecialties(hairdresserUpdateRequest.specialties());
+    }
+
+    private Hairdresser validateOwnershipAndGetHairdresser(long hairdresserId, long userId) {
+        Hairdresser hairdresser = hairdresserRepository.findById(hairdresserId)
+                .orElseThrow(() -> new NotFoundException(hairdresserId));
+        if (hairdresser.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
+        return hairdresser;
+    }
+
+    private Optional<Hairdresser> findActiveHairdresserById(long hairdresserId) {
+        return hairdresserRepository.findActiveById(hairdresserId);
     }
 }
