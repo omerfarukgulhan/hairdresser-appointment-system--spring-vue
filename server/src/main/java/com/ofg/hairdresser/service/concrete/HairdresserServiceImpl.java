@@ -70,7 +70,7 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest) {
-        Hairdresser existingHairdresser = validateOwnershipAndGetHairdresser(hairdresserId, userId);
+        Hairdresser existingHairdresser = getAndValidateHairdresserOwnership(hairdresserId, userId);
         updateHairdresserDetails(existingHairdresser, hairdresserUpdateRequest);
         Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
         return new HairdresserResponse(updatedHairdresser);
@@ -78,7 +78,7 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public void deleteHairdresser(long userId, long hairdresserId) {
-        validateOwnershipAndGetHairdresser(hairdresserId, userId);
+        getAndValidateHairdresserOwnership(hairdresserId, userId);
         hairdresserRepository.deleteById(hairdresserId);
     }
 
@@ -88,7 +88,7 @@ public class HairdresserServiceImpl implements HairdresserService {
         hairdresser.setSpecialties(hairdresserUpdateRequest.specialties());
     }
 
-    private Hairdresser validateOwnershipAndGetHairdresser(long hairdresserId, long userId) {
+    private Hairdresser getAndValidateHairdresserOwnership(long hairdresserId, long userId) {
         Hairdresser hairdresser = hairdresserRepository.findById(hairdresserId)
                 .orElseThrow(() -> new NotFoundException(hairdresserId));
         if (hairdresser.getUser().getId() != userId) {
