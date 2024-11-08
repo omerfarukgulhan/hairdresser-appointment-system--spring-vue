@@ -18,5 +18,6 @@ public interface HairdresserRepository extends JpaRepository<Hairdresser, Long> 
     @Query("SELECT h FROM Hairdresser h WHERE h.id = :hairdresserId AND h.active = false")
     Optional<Hairdresser> findInactiveById(Long hairdresserId);
 
-    Optional<Hairdresser> findByUserId(Long userId);
+    @Query("SELECT h FROM Hairdresser h WHERE h.user.id = :userId AND h.active = true")
+    Optional<Hairdresser> findActiveByUserId(Long userId);
 }

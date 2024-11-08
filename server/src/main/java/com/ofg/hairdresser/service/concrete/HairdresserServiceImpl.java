@@ -36,7 +36,7 @@ public class HairdresserServiceImpl implements HairdresserService {
 
     @Override
     public Hairdresser getHairdresserEntityByUserId(long userId) {
-        return hairdresserRepository.findByUserId(userId)
+        return hairdresserRepository.findActiveByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(userId));
     }
 
