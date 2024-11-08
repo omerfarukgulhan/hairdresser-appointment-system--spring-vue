@@ -47,14 +47,14 @@ public class TreatmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiDataResponse<TreatmentResponse>> addHairdresser(@AuthenticationPrincipal CurrentUser currentUser,
+    public ResponseEntity<ApiDataResponse<TreatmentResponse>> addTreatment(@AuthenticationPrincipal CurrentUser currentUser,
                                                                              @Valid @RequestBody TreatmentCreateRequest treatmentCreateRequest) {
         TreatmentResponse treatment = treatmentService.addTreatment(currentUser.getId(), treatmentCreateRequest);
         return ResponseUtil.createApiDataResponse(treatment, TREATMENT_ADD_SUCCESS, HttpStatus.CREATED);
     }
 
     @PutMapping("/{treatmentId}")
-    public ResponseEntity<ApiDataResponse<TreatmentResponse>> updateHairdresser(@AuthenticationPrincipal CurrentUser currentUser,
+    public ResponseEntity<ApiDataResponse<TreatmentResponse>> updateTreatment(@AuthenticationPrincipal CurrentUser currentUser,
                                                                                 @Valid @RequestBody TreatmentUpdateRequest treatmentUpdateRequest,
                                                                                 @PathVariable long treatmentId) {
         TreatmentResponse treatment = treatmentService.updateTreatment(currentUser.getId(), treatmentId, treatmentUpdateRequest);
@@ -62,7 +62,7 @@ public class TreatmentController {
     }
 
     @DeleteMapping("/{treatmentId}")
-    public ResponseEntity<ApiResponse> deleteHairdresser(@AuthenticationPrincipal CurrentUser currentUser,
+    public ResponseEntity<ApiResponse> deleteTreatment(@AuthenticationPrincipal CurrentUser currentUser,
                                                          @PathVariable long treatmentId) {
         treatmentService.deleteTreatment(currentUser.getId(), treatmentId);
         return ResponseUtil.createApiResponse(TREATMENT_DELETE_SUCCESS, HttpStatus.NO_CONTENT);

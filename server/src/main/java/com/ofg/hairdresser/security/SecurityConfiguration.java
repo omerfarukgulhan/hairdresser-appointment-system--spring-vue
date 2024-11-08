@@ -36,6 +36,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.PUT, "/appointments/complete/{appointmentId}").hasAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.DELETE, "/appointments/{appointmentId}").hasAuthority("ROLE_USER")
 
+                                .requestMatchers(HttpMethod.GET, "/availabilities/{hairdresserId}").permitAll()
+
                                 .requestMatchers(HttpMethod.GET, "/hairdressers").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/hairdressers/{hairdresserId}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/hairdressers").hasAuthority("ROLE_USER")
@@ -52,6 +54,28 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/treatments").hasAuthority("ROLE_HAIRDRESSER")
                                 .requestMatchers(HttpMethod.PUT, "/treatments/{treatmentId}").hasAuthority("ROLE_HAIRDRESSER")
                                 .requestMatchers(HttpMethod.DELETE, "/treatments/{treatmentId}").hasAuthority("ROLE_HAIRDRESSER")
+
+                                .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/roles").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+
+                                .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/roles").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/roles/{roleId}").hasAuthority("ROLE_ADMIN")
+
+                                .requestMatchers(HttpMethod.GET, "/users").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/users/{userId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/users").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/users/{userId}").hasAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.PUT, "/users/activate/{token}").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/users/update-password/{userId}").hasAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.PUT, "/users/reset-password").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/users/reset-password/verify/{token}").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/users/{userId}").hasAuthority("ROLE_USER")
 
                                 .anyRequest().permitAll()
                 )
