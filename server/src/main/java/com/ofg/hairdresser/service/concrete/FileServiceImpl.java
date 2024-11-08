@@ -33,9 +33,10 @@ public class FileServiceImpl implements FileService {
         this.tika = new Tika();
     }
 
-    public String saveFile(MultipartFile file) {
+    @Override
+    public String saveFile(String imageType, MultipartFile file) {
         String filename = generateFilename(file.getOriginalFilename());
-        Path path = getProfileImagePath(filename);
+        Path path = getImagePath(imageType, filename);
 
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -46,9 +47,10 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public String saveBase64StringAsFile(String image) {
+    @Override
+    public String saveBase64StringAsFile(String imageType, String image) {
         String filename = UUID.randomUUID().toString();
-        Path path = getProfileImagePath(filename);
+        Path path = getImagePath(imageType, filename);
 
         try (OutputStream outputStream = Files.newOutputStream(path)) {
             outputStream.write(decodedImage(image));
@@ -59,6 +61,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
     public String detectType(String value) {
         return tika.detect(decodedImage(value));
     }
@@ -67,7 +70,8 @@ public class FileServiceImpl implements FileService {
         return Base64.getDecoder().decode(encodedImage.split(",")[1]);
     }
 
-    public void deleteProfileImage(String image) {
+    @Override
+    public void deleteProfileImage(String imageType, String image) {
         if (image == null) {
             throw new FileServiceException("image null");
         }
@@ -76,7 +80,7 @@ public class FileServiceImpl implements FileService {
             return;
         }
 
-        Path path = getProfileImagePath(image);
+        Path path = getImagePath(imageType,image);
 
         try {
             Files.deleteIfExists(path);
@@ -86,8 +90,13 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private Path getProfileImagePath(String filename) {
-        return Paths.get(appProperties.getStorage().getRoot(), appProperties.getStorage().getProfile(), filename);
+    private Path getImagePath(String imageType, String filename) {
+        String folder = switch (imageType) {
+            case "profile" -> appProperties.getStorage().getProfile();
+            case "hairdresser" -> appProperties.getStorage().getHairdressers();
+            default -> throw new IllegalArgumentException("Unknown image type: " + imageType);
+        };
+        return Paths.get(appProperties.getStorage().getRoot(), folder, filename);
     }
 
     private String generateFilename(String originalFilename) {
