@@ -15,16 +15,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AvailabilityServiceImpl implements AvailabilityService {
     private final AppointmentService appointmentService;
     private final TreatmentService treatmentService;
 
-    private final LocalTime WORK_DAY_START = LocalTime.of(9, 0);
-    private final LocalTime WORK_DAY_END = LocalTime.of(17, 0);
-    private final Duration SLOT_DURATION = Duration.ofHours(1);
+    private static final LocalTime WORK_DAY_START = LocalTime.of(9, 0);
+    private static final LocalTime WORK_DAY_END = LocalTime.of(17, 0);
+    private static final Duration SLOT_DURATION = Duration.ofMinutes(30);
 
     @Autowired
     public AvailabilityServiceImpl(AppointmentService appointmentService, TreatmentService treatmentService) {
@@ -34,35 +33,53 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Override
     public List<TimeSlotResponse> getDailyAvailabilityForHairdresser(long hairdresserId, LocalDate localDate) {
+        List<AppointmentResponse> appointments = getAppointmentsForDay(hairdresserId, localDate);
+        List<TimeSlotResponse> schedule = generateDailySchedule();
+
+        markBookedSlots(schedule, appointments);
+
+        return schedule;
+    }
+
+    private List<AppointmentResponse> getAppointmentsForDay(long hairdresserId, LocalDate localDate) {
         LocalDateTime startOfDay = localDate.atStartOfDay();
-        List<AppointmentResponse> appointments = appointmentService.getAllAppointmentsForHairdresserByDate(hairdresserId, startOfDay);
+        return appointmentService.getAllAppointmentsForHairdresserByDate(hairdresserId, startOfDay);
+    }
+
+    private List<TimeSlotResponse> generateDailySchedule() {
         List<TimeSlotResponse> schedule = new ArrayList<>();
         LocalTime currentTime = WORK_DAY_START;
+
         while (currentTime.isBefore(WORK_DAY_END)) {
             LocalTime slotEndTime = currentTime.plus(SLOT_DURATION);
             schedule.add(new TimeSlotResponse(currentTime, slotEndTime, false));
             currentTime = slotEndTime;
         }
 
+        return schedule;
+    }
+
+    private void markBookedSlots(List<TimeSlotResponse> schedule, List<AppointmentResponse> appointments) {
         for (AppointmentResponse appointment : appointments) {
             LocalTime appointmentStart = appointment.appointmentDate().toLocalTime();
-            Treatment treatment = treatmentService.getTreatmentEntityById(appointment.treatmentId());
-            int treatmentDurationInMinutes = treatment.getDuration();
+            int treatmentDurationInMinutes = getTreatmentDuration(appointment.treatmentId());
             LocalTime appointmentEnd = appointmentStart.plusMinutes(treatmentDurationInMinutes);
-            for (LocalTime time = WORK_DAY_START; time.isBefore(WORK_DAY_END); time = time.plus(SLOT_DURATION)) {
-                if (time.isBefore(appointmentEnd) && time.plus(SLOT_DURATION).isAfter(appointmentStart)) {
-                    LocalTime finalTime = time;
-                    schedule = schedule.stream()
-                            .map(slot -> {
-                                if (slot.start().equals(finalTime)) {
-                                    return new TimeSlotResponse(slot.start(), slot.end(), true);
-                                }
-                                return slot;
-                            })
-                            .collect(Collectors.toList());
+
+            for (int i = 0; i < schedule.size(); i++) {
+                TimeSlotResponse slot = schedule.get(i);
+                if (isSlotOverlapping(slot, appointmentStart, appointmentEnd)) {
+                    schedule.set(i, new TimeSlotResponse(slot.start(), slot.end(), true));
                 }
             }
         }
-        return schedule;
+    }
+
+    private int getTreatmentDuration(long treatmentId) {
+        Treatment treatment = treatmentService.getTreatmentEntityById(treatmentId);
+        return treatment.getDuration();
+    }
+
+    private boolean isSlotOverlapping(TimeSlotResponse slot, LocalTime appointmentStart, LocalTime appointmentEnd) {
+        return slot.start().isBefore(appointmentEnd) && slot.end().isAfter(appointmentStart);
     }
 }
