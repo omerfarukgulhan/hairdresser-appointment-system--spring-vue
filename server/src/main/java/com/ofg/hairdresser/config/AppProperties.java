@@ -30,7 +30,8 @@ public class AppProperties {
     @Data
     public static class Storage {
         private String root = "uploads";
-        private String hairdressers = "hairdresser";
+        private String hairdresser = "hairdresser";
+        private String treatment = "treatment";
         private String profile = "profile";
     }
 }

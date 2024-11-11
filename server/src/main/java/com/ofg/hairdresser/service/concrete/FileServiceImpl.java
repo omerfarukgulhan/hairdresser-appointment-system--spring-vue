@@ -71,7 +71,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteProfileImage(String imageType, String image) {
+    public void deleteImage(String imageType, String image) {
         if (image == null) {
             throw new FileServiceException("image null");
         }
@@ -80,7 +80,7 @@ public class FileServiceImpl implements FileService {
             return;
         }
 
-        Path path = getImagePath(imageType,image);
+        Path path = getImagePath(imageType, image);
 
         try {
             Files.deleteIfExists(path);
@@ -93,7 +93,9 @@ public class FileServiceImpl implements FileService {
     private Path getImagePath(String imageType, String filename) {
         String folder = switch (imageType) {
             case "profile" -> appProperties.getStorage().getProfile();
-            case "hairdresser" -> appProperties.getStorage().getHairdressers();
+            case "hairdresser/main-image" -> appProperties.getStorage().getHairdresser() + "/main-image";
+            case "hairdresser/side-images" -> appProperties.getStorage().getHairdresser() + "/side-images";
+            case "treatment/side-images" -> appProperties.getStorage().getTreatment() + "/side-images";
             default -> throw new IllegalArgumentException("Unknown image type: " + imageType);
         };
         return Paths.get(appProperties.getStorage().getRoot(), folder, filename);
