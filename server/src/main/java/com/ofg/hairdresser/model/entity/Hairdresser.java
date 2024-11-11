@@ -43,7 +43,7 @@ public class Hairdresser {
     @OneToMany(mappedBy = "hairdresser", fetch = FetchType.EAGER)
     private List<Treatment> treatments;
 
-    private String mainPhoto  = "default.png";
+    private String mainPhoto = "default.png";
 
     @ElementCollection
     @CollectionTable(name = "hairdresser_side_photos", joinColumns = @JoinColumn(name = "hairdresser_id"))
