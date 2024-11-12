@@ -12,6 +12,7 @@ public record HairdresserResponse(
         int numberOfReviews,
         double averageRating,
         int yearsOfExperience,
+        String address,
         List<String> specialties,
         String mainImage,
         List<String> sideImages,
@@ -19,9 +20,10 @@ public record HairdresserResponse(
 ) {
     public HairdresserResponse(Hairdresser hairdresser) {
         this(hairdresser.getId(), hairdresser.getUser().getId(),
-                hairdresser.getBio(), hairdresser.getNumberOfReviews(), hairdresser.getAverageRating(),
-                hairdresser.getYearsOfExperience(), hairdresser.getSpecialties(), hairdresser.getMainImage(),
-                hairdresser.getSideImages(),
+                hairdresser.getBio(), hairdresser.getNumberOfReviews(),
+                hairdresser.getAverageRating(), hairdresser.getYearsOfExperience(),
+                hairdresser.getAddress(), hairdresser.getSpecialties(),
+                hairdresser.getMainImage(), hairdresser.getSideImages(),
                 hairdresser.getTreatments().stream()
                         .map(TreatmentResponse::new)
                         .collect(Collectors.toList()));
