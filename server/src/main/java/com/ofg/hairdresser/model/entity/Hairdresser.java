@@ -31,6 +31,9 @@ public class Hairdresser {
     private int yearsOfExperience;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
     private boolean active = false;
 
     @ElementCollection

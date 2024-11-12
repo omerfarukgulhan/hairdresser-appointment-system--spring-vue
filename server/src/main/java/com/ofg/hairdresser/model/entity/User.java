@@ -32,6 +32,9 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
+    private String phoneNumber;
+
     @NotBlank
     @Size(min = 8, max = 255)
     private String password;
