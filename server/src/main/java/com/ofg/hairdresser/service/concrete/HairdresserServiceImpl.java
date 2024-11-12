@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -82,11 +84,31 @@ public class HairdresserServiceImpl implements HairdresserService {
     }
 
     @Override
-    public HairdresserResponse uploadImages(long userId, long hairdresserId, MultipartFile mainPhoto) {
+    public HairdresserResponse updateMainImage(long userId, long hairdresserId, MultipartFile mainImage) {
         Hairdresser existingHairdresser = getAndValidateHairdresserOwnership(hairdresserId, userId);
-        String mainPhotoFileName = fileService.saveFile("hairdresser", mainPhoto);
-        fileService.deleteProfileImage("hairdresser", existingHairdresser.getMainPhoto());
-        existingHairdresser.setMainPhoto(mainPhotoFileName);
+        String mainImageFileName = fileService.saveFile("hairdresser/main", mainImage);
+        fileService.deleteImage("hairdresser/main-images", existingHairdresser.getMainImage());
+        existingHairdresser.setMainImage(mainImageFileName);
+        Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
+        return new HairdresserResponse(updatedHairdresser);
+    }
+
+    @Override
+    public HairdresserResponse updateSideImages(long userId, long hairdresserId, List<MultipartFile> sideImages) {
+        Hairdresser existingHairdresser = getAndValidateHairdresserOwnership(hairdresserId, userId);
+        if (sideImages.size() > 5) {
+            throw new IllegalArgumentException("A maximum of 5 side images are allowed.");
+        }
+        for (String oldImage : existingHairdresser.getSideImages()) {
+            fileService.deleteImage("hairdresser/side-images", oldImage);
+        }
+        existingHairdresser.getSideImages().clear();
+        List<String> updatedSideImages = new ArrayList<>();
+        for (MultipartFile image : sideImages) {
+            String imageFileName = fileService.saveFile("hairdresser/side-images", image);
+            updatedSideImages.add(imageFileName);
+        }
+        existingHairdresser.getSideImages().addAll(updatedSideImages);
         Hairdresser updatedHairdresser = hairdresserRepository.save(existingHairdresser);
         return new HairdresserResponse(updatedHairdresser);
     }

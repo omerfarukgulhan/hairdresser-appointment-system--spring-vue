@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface HairdresserService {
     Page<HairdresserResponse> getAllHairdressers(Pageable pageable);
 
@@ -23,7 +25,9 @@ public interface HairdresserService {
 
     HairdresserResponse updateHairdresser(long userId, long hairdresserId, HairdresserUpdateRequest hairdresserUpdateRequest);
 
-    HairdresserResponse uploadImages(long userId, long hairdresserId, MultipartFile mainPhoto);
+    HairdresserResponse updateMainImage(long userId, long hairdresserId, MultipartFile mainPhoto);
+
+    HairdresserResponse updateSideImages(long userId, long hairdresserId, List<MultipartFile> sidePhotos);
 
     void deleteHairdresser(long userId, long hairdresserId);
 }

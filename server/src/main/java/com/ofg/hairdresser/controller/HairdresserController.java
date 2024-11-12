@@ -18,6 +18,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/hairdressers")
 public class HairdresserController {
@@ -61,11 +63,19 @@ public class HairdresserController {
         return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_UPDATE_SUCCESS, HttpStatus.OK);
     }
 
-    @PostMapping("/{hairdresserId}/upload-images")
-    public ResponseEntity<ApiDataResponse<HairdresserResponse>> uploadImages(@AuthenticationPrincipal CurrentUser currentUser,
-                                                                             @PathVariable long hairdresserId,
-                                                                             @RequestParam("mainPhoto") MultipartFile mainPhoto) {
-        HairdresserResponse hairdresser = hairdresserService.uploadImages(currentUser.getId(), hairdresserId, mainPhoto);
+    @PutMapping("/{hairdresserId}/update-main-image")
+    public ResponseEntity<ApiDataResponse<HairdresserResponse>> updateMainImage(@AuthenticationPrincipal CurrentUser currentUser,
+                                                                                @PathVariable long hairdresserId,
+                                                                                @RequestParam("mainImage") MultipartFile mainImage) {
+        HairdresserResponse hairdresser = hairdresserService.updateMainImage(currentUser.getId(), hairdresserId, mainImage);
+        return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_UPDATE_SUCCESS, HttpStatus.OK);
+    }
+
+    @PutMapping("/{hairdresserId}/update-side-images")
+    public ResponseEntity<ApiDataResponse<HairdresserResponse>> updateSideImages(@AuthenticationPrincipal CurrentUser currentUser,
+                                                                                 @PathVariable long hairdresserId,
+                                                                                 @RequestParam("sideImages") List<MultipartFile> sideImages) {
+        HairdresserResponse hairdresser = hairdresserService.updateSideImages(currentUser.getId(), hairdresserId, sideImages);
         return ResponseUtil.createApiDataResponse(hairdresser, HAIRDRESSER_UPDATE_SUCCESS, HttpStatus.OK);
     }
 
