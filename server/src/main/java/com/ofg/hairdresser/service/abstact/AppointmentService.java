@@ -1,5 +1,6 @@
 package com.ofg.hairdresser.service.abstact;
 
+import com.ofg.hairdresser.model.entity.Appointment;
 import com.ofg.hairdresser.model.request.AppointmentCreateRequest;
 import com.ofg.hairdresser.model.request.AppointmentUpdateRequest;
 import com.ofg.hairdresser.model.response.AppointmentResponse;
@@ -13,6 +14,8 @@ public interface AppointmentService {
     Page<AppointmentResponse> getAllAppointmentsForUser(long userId, Pageable pageable);
 
     List<AppointmentResponse> getAllAppointmentsForHairdresserByDate(long hairdresserId, LocalDateTime localDateTime);
+
+    List<Appointment> getUpcomingAppointmentsWithinMinutes(int minutes);
 
     AppointmentResponse bookAppointment(long userId, AppointmentCreateRequest appointmentCreateRequest);
 

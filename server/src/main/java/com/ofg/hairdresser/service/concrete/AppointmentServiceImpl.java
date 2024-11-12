@@ -62,6 +62,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public List<Appointment> getUpcomingAppointmentsWithinMinutes(int minutes) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startWindow = now.plusMinutes(minutes - 5);
+        LocalDateTime endWindow = now.plusMinutes(minutes + 5);
+        return appointmentRepository.findAppointmentsWithinNotificationWindow(startWindow, endWindow);
+    }
+
+    @Override
     public AppointmentResponse bookAppointment(long userId, AppointmentCreateRequest appointmentCreateRequest) {
         User user = userService.getUserEntityById(userId);
         Treatment treatment = treatmentService.getTreatmentEntityById(appointmentCreateRequest.treatmentId());

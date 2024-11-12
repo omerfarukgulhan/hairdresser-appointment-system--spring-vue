@@ -29,4 +29,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByHairdresserIdAndAppointmentDateBetween(long hairdresserId,
                                                                    LocalDateTime start,
                                                                    LocalDateTime end);
+
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate BETWEEN :startWindow AND :endWindow")
+    List<Appointment> findAppointmentsWithinNotificationWindow(
+            @Param("startWindow") LocalDateTime startWindow,
+            @Param("endWindow") LocalDateTime endWindow);
 }
