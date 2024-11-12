@@ -15,11 +15,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
 @SpringBootApplication
+@EnableScheduling
 public class HairdresserApplication {
     public static void main(String[] args) {
         SpringApplication.run(HairdresserApplication.class, args);
