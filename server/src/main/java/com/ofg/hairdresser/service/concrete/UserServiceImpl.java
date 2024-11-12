@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
     private void updateUserProfileImage(User user, MultipartFile file) {
         String fileName = fileService.saveFile("profile", file);
-        fileService.deleteProfileImage("profile", user.getProfileImage());
+        fileService.deleteImage("profile", user.getProfileImage());
         user.setProfileImage(fileName);
     }
 
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
 
     private void deleteUserProfileImageIfExists(User user) {
         if (user.getProfileImage() != null) {
-            fileService.deleteProfileImage("profile", user.getProfileImage());
+            fileService.deleteImage("profile", user.getProfileImage());
         }
     }
 }
