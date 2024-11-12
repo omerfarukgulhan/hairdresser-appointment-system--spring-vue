@@ -41,6 +41,7 @@ public class EmailServiceImpl implements EmailService {
         properties.put("mail.smtp.starttls.enable", "true");
     }
 
+    @Override
     public void sendActivationEmail(String email, String activationToken) {
         String activationUrl = buildActivationUrl(activationToken);
         String mailBody = buildEmailBody("app.msg.mail.user.created.title", activationUrl);
@@ -55,19 +56,8 @@ public class EmailServiceImpl implements EmailService {
         sendEmail(email, mailBody, "Password Reset Email");
     }
 
-    private String buildEmailBody(String titleKey, String url) {
-        String title = messageSource.getMessage(titleKey, null, LocaleContextHolder.getLocale());
-        String clickHere = messageSource.getMessage("app.msg.mail.click.here", null, LocaleContextHolder.getLocale());
-
-        return new StringBuilder()
-                .append("<html><body>")
-                .append("<h1>").append(title).append("</h1>")
-                .append("<a href=\"").append(url).append("\">").append(clickHere).append("</a>")
-                .append("</body></html>")
-                .toString();
-    }
-
-    private void sendEmail(String to, String body, String subject) {
+    @Override
+    public void sendEmail(String to, String body, String subject) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper;
 
@@ -81,6 +71,18 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             throw new EmailServiceException();
         }
+    }
+
+    private String buildEmailBody(String titleKey, String url) {
+        String title = messageSource.getMessage(titleKey, null, LocaleContextHolder.getLocale());
+        String clickHere = messageSource.getMessage("app.msg.mail.click.here", null, LocaleContextHolder.getLocale());
+
+        return new StringBuilder()
+                .append("<html><body>")
+                .append("<h1>").append(title).append("</h1>")
+                .append("<a href=\"").append(url).append("\">").append(clickHere).append("</a>")
+                .append("</body></html>")
+                .toString();
     }
 
     private String buildActivationUrl(String activationToken) {
