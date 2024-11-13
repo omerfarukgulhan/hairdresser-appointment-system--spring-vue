@@ -7,6 +7,8 @@ import com.ofg.hairdresser.service.abstact.AdminService;
 import com.ofg.hairdresser.service.abstact.HairdresserService;
 import com.ofg.hairdresser.service.abstact.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,12 @@ public class AdminServiceImpl implements AdminService {
     public AdminServiceImpl(HairdresserService hairdresserService, UserRoleService userRoleService) {
         this.hairdresserService = hairdresserService;
         this.userRoleService = userRoleService;
+    }
+
+    @Override
+    public Page<HairdresserResponse> getAllInactiveHairdressers(Pageable pageable) {
+        return hairdresserService.getAllInactiveHairdresserEntities(pageable)
+                .map(HairdresserResponse::new);
     }
 
     @Override
