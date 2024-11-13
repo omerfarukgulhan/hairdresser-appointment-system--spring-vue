@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authentication) ->
                         authentication
                                 .requestMatchers(HttpMethod.PUT, "/admin/approve/hairdressers/{hairdresserId}").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/admin/hairdressers/inactives").hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers(HttpMethod.GET, "/appointments").hasAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.POST, "/appointments").hasAuthority("ROLE_USER")
@@ -42,6 +43,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/hairdressers/{hairdresserId}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/hairdressers").hasAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.PUT, "/hairdressers/{hairdresserId}").hasAuthority("ROLE_HAIRDRESSER")
+                                .requestMatchers(HttpMethod.PUT, "/hairdressers/{hairdresserId}/update-main-image").hasAuthority("ROLE_HAIRDRESSER")
+                                .requestMatchers(HttpMethod.PUT, "/hairdressers/{hairdresserId}/update-side-images").hasAuthority("ROLE_HAIRDRESSER")
                                 .requestMatchers(HttpMethod.DELETE, "/hairdressers/{hairdresserId}").hasAuthority("ROLE_HAIRDRESSER")
 
                                 .requestMatchers(HttpMethod.GET, "/reviews/{hairdresserId}").permitAll()
