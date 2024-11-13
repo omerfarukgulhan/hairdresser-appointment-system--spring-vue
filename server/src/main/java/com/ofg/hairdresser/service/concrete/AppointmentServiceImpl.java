@@ -126,6 +126,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         LocalTime appointmentStartTime = startTime.toLocalTime();
         LocalTime appointmentEndTime = endTime.toLocalTime();
 
+        int startMinute = appointmentStartTime.getMinute();
+        if (startMinute != 0 && startMinute != 30) {
+            throw new AppointmentUnavailableException("Appointment time must be on the hour or half-hour (e.g., 09:00 or 09:30).");
+        }
+
         if (appointmentStartTime.isBefore(WORK_START_TIME) || appointmentEndTime.isAfter(WORK_END_TIME)) {
             throw new AppointmentUnavailableException("Appointment must be between 9 AM and 5 PM.");
         }
