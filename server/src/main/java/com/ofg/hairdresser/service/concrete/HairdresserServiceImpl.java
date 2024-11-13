@@ -61,6 +61,11 @@ public class HairdresserServiceImpl implements HairdresserService {
     }
 
     @Override
+    public Page<Hairdresser> getAllInactiveHairdresserEntities(Pageable pageable) {
+        return hairdresserRepository.findAllInactiveHairdressers(pageable);
+    }
+
+    @Override
     public Hairdresser getInactiveHairdresserEntityById(long hairdresserId) {
         return hairdresserRepository.findInactiveById(hairdresserId)
                 .orElseThrow(() -> new NotFoundException(hairdresserId));

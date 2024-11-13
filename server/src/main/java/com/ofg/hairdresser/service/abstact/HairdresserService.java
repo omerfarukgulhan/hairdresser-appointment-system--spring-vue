@@ -19,6 +19,8 @@ public interface HairdresserService {
 
     Hairdresser getHairdresserEntityById(long hairdresserId);
 
+    Page<Hairdresser> getAllInactiveHairdresserEntities(Pageable pageable);
+
     Hairdresser getInactiveHairdresserEntityById(long hairdresserId);
 
     HairdresserResponse addHairdresser(long userId, HairdresserCreateRequest hairdresserCreateRequest);
