@@ -100,9 +100,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponse completeAppointment(long userId, long appointmentId) {
-        Appointment existingAppointment = getAndValidateAppointmentOwnership(userId, appointmentId);
+    public AppointmentResponse completeAppointment(long hairdresserUserId, long appointmentId) {
+        Appointment existingAppointment = getAndValidateAppointmentOwnershipByHairdresser(hairdresserUserId, appointmentId);
         existingAppointment.setCompleted(true);
+
         Appointment savedAppointment = appointmentRepository.save(existingAppointment);
         return new AppointmentResponse(savedAppointment);
     }
@@ -117,6 +118,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new NotFoundException(appointmentId));
         if (appointment.getUser().getId() != userId) {
+            throw new UnauthorizedException();
+        }
+        return appointment;
+    }
+
+    private Appointment getAndValidateAppointmentOwnershipByHairdresser(long hairdresserUserId, long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundException(appointmentId));
+        if (appointment.getHairdresser().getUser().getId() != hairdresserUserId) {
             throw new UnauthorizedException();
         }
         return appointment;

@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/appointments").hasAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.POST, "/appointments").hasAuthority("ROLE_USER")
                                 .requestMatchers(HttpMethod.PUT, "/appointments/{appointmentId}").hasAuthority("ROLE_USER")
-                                .requestMatchers(HttpMethod.PUT, "/appointments/complete/{appointmentId}").hasAuthority("ROLE_USER")
+                                .requestMatchers(HttpMethod.PUT, "/appointments/complete/{appointmentId}").hasAuthority("ROLE_HAIRDRESSER")
                                 .requestMatchers(HttpMethod.DELETE, "/appointments/{appointmentId}").hasAuthority("ROLE_USER")
 
                                 .requestMatchers(HttpMethod.GET, "/availabilities/{hairdresserId}").permitAll()
