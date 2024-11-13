@@ -48,6 +48,11 @@ public class TreatmentServiceImpl implements TreatmentService {
 
     @Override
     public TreatmentResponse addTreatment(long userId, TreatmentCreateRequest treatmentCreateRequest) {
+        int duration = treatmentCreateRequest.duration();
+        if (duration % 30 != 0) {
+            throw new IllegalArgumentException("Treatment duration must be divisible by 30 minutes.");
+        }
+
         Hairdresser hairdresser = hairdresserService.getHairdresserEntityByUserId(userId);
         Treatment treatment = treatmentCreateRequest.toTreatment();
         treatment.setHairdresser(hairdresser);
