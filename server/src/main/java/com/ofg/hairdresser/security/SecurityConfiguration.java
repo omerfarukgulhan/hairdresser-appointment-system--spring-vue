@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -85,8 +88,16 @@ public class SecurityConfiguration {
                 .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(authEntryPoint))
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.disable())
-                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(corsConfig -> corsConfig.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }));
         return http.build();
     }
 }
