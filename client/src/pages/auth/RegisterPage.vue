@@ -85,10 +85,8 @@ export default {
               </div>
             </form>
             <p class="text-center mt-3">
-
-              Already have an account? <a href="/login">
+              Already have an account?
               <router-link class="me-2" to="/login">Login here</router-link>
-            </a>
             </p>
           </div>
         </div>
@@ -98,5 +96,8 @@ export default {
 </template>
 
 <style scoped>
-
+.card {
+  max-width: 400px;
+  margin: auto;
+}
 </style>

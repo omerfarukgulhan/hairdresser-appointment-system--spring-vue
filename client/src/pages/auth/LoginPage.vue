@@ -69,6 +69,10 @@ export default {
                 {{ error }}
               </div>
             </form>
+            <p class="text-center mt-3">
+              Don't have account?
+              <router-link class="me-2" to="/login">Register here</router-link>
+            </p>
           </div>
         </div>
       </div>
