@@ -158,6 +158,7 @@ public class UserServiceImpl implements UserService {
     private void updateUserDetails(User user, UserUpdateRequest request) {
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
+        user.setPhoneNumber(request.phoneNumber());
     }
 
     private void updateUserProfileImage(User user, MultipartFile file) {

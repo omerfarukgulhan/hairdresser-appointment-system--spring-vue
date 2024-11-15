@@ -9,7 +9,10 @@ public record UserUpdateRequest(
         String firstName,
         @NotBlank(message = "{app.constraint.last-name.not-blank}")
         @Size(min = 4, max = 255)
-        String lastName
+        String lastName,
+        @NotBlank(message = "{app.constraint.phone-number.not-blank}")
+        @Size(min = 10, max = 15, message = "{app.constraint.phone-number.size}")
+        String phoneNumber
 ) {
 
 }

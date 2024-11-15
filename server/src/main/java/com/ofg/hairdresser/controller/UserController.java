@@ -66,8 +66,9 @@ public class UserController {
             @PathVariable Long userId,
             @RequestParam("firstName") String firstName,
             @RequestParam("lastName") String lastName,
+            @RequestParam("phoneNumber") String phoneNumber,
             @RequestPart(value = "profileImage", required = false) MultipartFile file) {
-        UserUpdateRequest userUpdateRequest = new UserUpdateRequest(firstName, lastName);
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest(firstName, lastName,phoneNumber);
         UserResponse userResponse = userService.updateUser(userId, userUpdateRequest, file);
         return ResponseUtil.createApiDataResponse(userResponse, USER_UPDATE_SUCCESS, HttpStatus.OK);
     }
