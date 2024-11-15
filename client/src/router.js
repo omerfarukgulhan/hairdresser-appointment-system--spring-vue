@@ -4,16 +4,17 @@ import HairdressersMainPage from "@/pages/hairdressers/HairdressersMainPage.vue"
 import LoginPage from "@/pages/auth/LoginPage.vue";
 import RegisterPage from "@/pages/auth/RegisterPage.vue";
 import NotFound from "@/pages/NotFound.vue";
-
+import HairdresserDetailPage from "@/pages/hairdressers/HairdresserDetailPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {path: '/', component: HairdressersMainPage},
-    {path: '/hairdressers', component: HairdressersMainPage},
-    {path: '/login', component: LoginPage, meta: {requiresAuth: false}},
-    {path: '/register', component: RegisterPage, meta: {requiresAuth: false}},
-    {path: '/:notFound(.*)', component: NotFound},
+    {path: '/', redirect: "/hairdressers"},
+    {path: '/hairdressers', name: "Hairdressers", component: HairdressersMainPage},
+    {path: '/hairdressers/:id', name: "HairdresserDetail", component: HairdresserDetailPage, props: true},
+    {path: '/login', name: "Login", component: LoginPage, meta: {requiresAuth: false}},
+    {path: '/register', name: "Register", component: RegisterPage, meta: {requiresAuth: false}},
+    {path: '/:notFound(.*)', name: "NotFound", component: NotFound},
   ],
 });
 

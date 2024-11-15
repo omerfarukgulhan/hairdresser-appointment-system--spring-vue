@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const serverUrl = import.meta.env.VITE_SERVER_URL + "/auth";
-const profileImageUrl = import.meta.env.VITE_SERVER_ASSETS_URL + "/profile/default.png";
+const profileImageUrl = import.meta.env.VITE_SERVER_ASSETS_URL + "/profile";
 
 export default {
   async login(context, payload) {
