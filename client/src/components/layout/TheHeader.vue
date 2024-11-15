@@ -18,9 +18,9 @@ export default {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark p-4">
     <div class="container">
-      <router-link class="nav-link navbar-brand" to="/hairdressers">Shave It</router-link>
+      <router-link class="nav-link navbar-brand fs-3 mRTL-2" to="/hairdressers">HairConnect</router-link>
 
       <button
           class="navbar-toggler"
@@ -37,7 +37,7 @@ export default {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link class="nav-link" to="/hairdressers">Hairdresser</router-link>
+            <router-link class="nav-link" to="/hairdressers">Hairdressers</router-link>
           </li>
         </ul>
 
