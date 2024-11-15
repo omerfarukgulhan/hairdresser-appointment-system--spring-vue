@@ -18,6 +18,8 @@ public class Hairdresser {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private String shopName;
+
     @Column(nullable = false)
     private String bio;
 

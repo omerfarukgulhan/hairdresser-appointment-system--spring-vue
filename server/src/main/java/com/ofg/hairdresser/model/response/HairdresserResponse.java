@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public record HairdresserResponse(
         Long id,
         Long userId,
+        String shopName,
         String bio,
         int numberOfReviews,
         double averageRating,
@@ -20,6 +21,7 @@ public record HairdresserResponse(
 ) {
     public HairdresserResponse(Hairdresser hairdresser) {
         this(hairdresser.getId(), hairdresser.getUser().getId(),
+                hairdresser.getShopName(),
                 hairdresser.getBio(), hairdresser.getNumberOfReviews(),
                 hairdresser.getAverageRating(), hairdresser.getYearsOfExperience(),
                 hairdresser.getAddress(), hairdresser.getSpecialties(),
