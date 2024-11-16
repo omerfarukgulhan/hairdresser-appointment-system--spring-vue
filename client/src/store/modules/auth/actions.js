@@ -4,6 +4,14 @@ const serverUrl = import.meta.env.VITE_SERVER_URL + "/auth";
 const profileImageUrl = import.meta.env.VITE_SERVER_ASSETS_URL + "/profile";
 
 export default {
+  updateUser(context, payload) {
+    const user = context.getters.getUser;
+    user.firstName = payload.firstName;
+    user.lastName = payload.lastName;
+    user.phoneNumber = payload.phoneNumber;
+    user.profileImage = `${profileImageUrl}/${payload.profileImage}`;
+    context.commit('SET_USER', user);
+  },
   async login(context, payload) {
     context.commit('SET_LOADING', true);
     context.commit('CLEAR_ERROR');

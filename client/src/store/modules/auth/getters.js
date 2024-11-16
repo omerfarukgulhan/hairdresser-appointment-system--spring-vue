@@ -14,6 +14,9 @@ export default {
   isAdmin(state) {
     return state.user && state.user.roles.some(role => role.name === 'ROLE_ADMIN');
   },
+  isHairdresser(state) {
+    return state.user && state.user.roles.some(role => role.name === 'ROLE_HAIRDRESSER');
+  },
   isLoading(state) {
     return state.loading;
   },
