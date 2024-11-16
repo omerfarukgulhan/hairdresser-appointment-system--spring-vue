@@ -22,7 +22,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     public void assignRoleToUser(long userId, String roleName) {
         Role role = roleService.getRoleByName(roleName);
         User user = userService.getUserEntityById(userId);
-        UserUpdateRequest userUpdateRequest = new UserUpdateRequest(user.getFirstName(), user.getLastName());
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest(user.getFirstName(), user.getLastName(),user.getPhoneNumber());
         if (!user.getRoles().contains(role)) {
             user.getRoles().add(role);
             userService.updateUser(user.getId(), userUpdateRequest, null);
