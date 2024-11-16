@@ -43,7 +43,7 @@ export default {
 
         <ul class="navbar-nav ms-auto">
           <li v-if="isLoggedIn" class="nav-item">
-            <span class="navbar-text username text-white">{{ user.firstName }}</span>
+            <router-link class="btn btn-primary me-2" to="/profile">{{ user.firstName }}</router-link>
           </li>
           <li v-else class="nav-item">
             <router-link class="btn btn-primary me-2" to="/login">Login</router-link>
@@ -63,12 +63,6 @@ export default {
 <style scoped>
 .navbar .btn {
   padding: 0.5rem 1rem;
-}
-
-.username {
-  margin-right: 1rem;
-  display: flex;
-  align-items: center;
 }
 
 .nav-link {
