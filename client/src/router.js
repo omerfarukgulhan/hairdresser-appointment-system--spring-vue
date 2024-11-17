@@ -6,6 +6,7 @@ import RegisterPage from "@/pages/auth/RegisterPage.vue";
 import NotFound from "@/pages/NotFound.vue";
 import HairdresserDetailPage from "@/pages/hairdressers/HairdresserDetailPage.vue";
 import UserProfilePage from "@/pages/user/UserProfilePage.vue";
+import UserActivationPage from "@/pages/auth/UserActivationPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,6 +17,12 @@ const router = createRouter({
     {path: '/profile', name: "UserProfile", component: UserProfilePage, meta: {requiresAuth: true}},
     {path: '/login', name: "Login", component: LoginPage, meta: {requiresAuth: false}},
     {path: '/register', name: "Register", component: RegisterPage, meta: {requiresAuth: false}},
+    {
+      path: '/users/activate/:activationToken',
+      name: 'UserActivation',
+      component: UserActivationPage,
+      meta: {requiresAuth: false}
+    },
     {path: '/:notFound(.*)', name: "NotFound", component: NotFound},
   ],
 });
